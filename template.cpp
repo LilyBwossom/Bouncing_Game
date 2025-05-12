@@ -10,7 +10,7 @@
 #pragma warning (disable : 4311) // pointer truncation from HANDLE to long
 #endif
 
-//#define FULLSCREEN
+// #define FULLSCREEN
 //#define ADVANCEDGL
 
 #include "game.h"
@@ -35,6 +35,15 @@ extern "C"
 #include "gl.h"
 #include "wglext.h"
 #endif
+
+int getScreenSize(bool height)
+{
+	RECT desktop;
+	const HWND hDesktop = GetDesktopWindow();
+
+	GetWindowRect(hDesktop, &desktop);
+	return height ? desktop.bottom : desktop.right;
+}
 
 namespace Tmpl8 { 
 
@@ -319,7 +328,7 @@ int main( int argc, char **argv )
 #ifdef FULLSCREEN
 	window = SDL_CreateWindow(TemplateVersion, 100, 100, ScreenWidth, ScreenHeight, SDL_WINDOW_FULLSCREEN );
 #else
-	window = SDL_CreateWindow(TemplateVersion, 100, 100, ScreenWidth, ScreenHeight, SDL_WINDOW_SHOWN );
+	window = SDL_CreateWindow(TemplateVersion, 100, 100, ScreenWidth, ScreenHeight, SDL_WINDOW_RESIZABLE + SDL_WINDOW_MAXIMIZED); // + SDL_WINDOW_MAXIMIZED
 #endif
 	surface = new Surface( ScreenWidth, ScreenHeight );
 	surface->Clear( 0 );

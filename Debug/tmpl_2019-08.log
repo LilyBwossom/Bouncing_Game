@@ -1,0 +1,6 @@
+﻿  player.cpp
+C:\Users\Tobias\source\repos\C++ Fast Track for Games Programming\player.cpp(49,25): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\Tobias\source\repos\C++ Fast Track for Games Programming\player.cpp(82,22): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\Tobias\source\repos\C++ Fast Track for Games Programming\player.cpp(96,27): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+C:\Users\Tobias\source\repos\C++ Fast Track for Games Programming\player.cpp(97,27): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+  tmpl_2019-08.vcxproj -> C:\Users\Tobias\source\repos\C++ Fast Track for Games Programming\tmpl_2019-08_x64_debug.exe

@@ -8,6 +8,8 @@
     <ClCompile Include="template.cpp">
       <Filter>template code</Filter>
     </ClCompile>
+    <ClCompile Include="player.cpp" />
+    <ClCompile Include="tile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h" />
@@ -17,10 +19,18 @@
     <ClInclude Include="template.h">
       <Filter>template code</Filter>
     </ClInclude>
+    <ClInclude Include="player.h" />
+    <ClInclude Include="tile.h" />
+    <ClInclude Include="ground.h">
+      <Filter>tiles</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="template code">
       <UniqueIdentifier>{bf32dd6e-4be7-4889-8ac6-49e7ee163c40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="tiles">
+      <UniqueIdentifier>{854a04f6-4192-4535-b68b-885c08c10db8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
