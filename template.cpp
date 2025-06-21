@@ -36,15 +36,6 @@ extern "C"
 #include "wglext.h"
 #endif
 
-int getScreenSize(bool height)
-{
-	RECT desktop;
-	const HWND hDesktop = GetDesktopWindow();
-
-	GetWindowRect(hDesktop, &desktop);
-	return height ? desktop.bottom : desktop.right;
-}
-
 namespace Tmpl8 { 
 
 double timer::inv_freq = 1;

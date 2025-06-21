@@ -2,26 +2,32 @@
 
 namespace Tmpl8
 {
-	enum Direction {
-		TOP,
-		BOTTOM,
-		LEFT,
-		RIGHT
-	};
-
 	class Tile {
 		public:
 			// virtual destructor
 			virtual ~Tile() = default;
 
-			virtual void OnCollide(Direction dir) {};
+			enum Direction {
+				TOP,
+				BOTTOM,
+				LEFT,
+				RIGHT
+			};
+
+			enum CollisionType {
+				FULL,
+				HALF
+			};
+
+			virtual void OnCollide(Direction dir, int txSet, int tySet) {};
+			virtual void updateAnim() {};
 
 			void ChangeSprite(int x, int y);
 
 			int mapX, mapY;
-			int id;
+
+			CollisionType collisionType = FULL;
 
 			bool hasCollision = true;
-		private:
 	};
 }

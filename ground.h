@@ -1,32 +1,30 @@
 #pragma once
 #include "tile.h"
+#include <stdlib.h>
 
 namespace Tmpl8
 {
 	class GroundTL : public Tile {
 	public:
 		GroundTL() {
-			mapX = 0;
-			mapY = 0;
-			id = 1;
+			mapX = 1;
+			mapY = 2;
 		}
 	};
 
 	class GroundTM : public Tile {
 	public:
 		GroundTM() {
-			mapX = 1;
-			mapY = 0;
-			id = 2;
+			mapX = 2;
+			mapY = 2;
 		}
 	};
 
 	class GroundTR : public Tile {
 	public:
 		GroundTR() {
-			mapX = 2;
-			mapY = 0;
-			id = 3;
+			mapX = 4;
+			mapY = 2;
 		}
 	};
 
@@ -34,26 +32,23 @@ namespace Tmpl8
 	public:
 		GroundML() {
 			mapX = 0;
-			mapY = 1;
-			id = 4;
+			mapY = 4;
 		}
 	};
 
 	class GroundMM : public Tile {
 	public:
 		GroundMM() {
-			mapX = 1;
-			mapY = 1;
-			id = 5;
+			mapX = 3;
+			mapY = 4;
 		}
 	};
 
 	class GroundMR : public Tile {
 	public:
 		GroundMR() {
-			mapX = 2;
-			mapY = 1;
-			id = 6;
+			mapX = 5;
+			mapY = 4;
 		}
 	};
 
@@ -61,8 +56,7 @@ namespace Tmpl8
 	public:
 		GroundBL() {
 			mapX = 0;
-			mapY = 2;
-			id = 7;
+			mapY = 5;
 		}
 	};
 
@@ -70,17 +64,71 @@ namespace Tmpl8
 	public:
 		GroundBM() {
 			mapX = 1;
-			mapY = 2;
-			id = 8;
+			mapY = 5;
 		}
 	};
 
 	class GroundBR : public Tile {
 	public:
 		GroundBR() {
+			mapX = 5;
+			mapY = 5;
+		}
+	};
+
+	class GroundUL : public Tile {
+	public:
+		GroundUL() {
+			mapX = 1;
+			mapY = 3;
+		}
+	};
+
+	class GroundUR : public Tile {
+	public:
+		GroundUR() {
+			mapX = 4;
+			mapY = 3;
+		}
+	};
+
+	class GroundMMR1 : public Tile {
+	public:
+		GroundMMR1() {
 			mapX = 2;
-			mapY = 2;
-			id = 9;
+			mapY = 3;
+		}
+	};
+
+	class GroundMMR2 : public Tile {
+	public:
+		GroundMMR2() {
+			mapX = 3;
+			mapY = 3;
+		}
+	};
+
+	class GroundMMR3: public Tile {
+	public:
+		GroundMMR3() {
+			mapX = 1;
+			mapY = 4;
+		}
+	};
+
+	class GroundMMR4 : public Tile {
+	public:
+		GroundMMR4() {
+			mapX = 2;
+			mapY = 4;
+		}
+	};
+
+	class GroundMMR5 : public Tile {
+	public:
+		GroundMMR5() {
+			mapX = 4;
+			mapY = 4;
 		}
 	};
 }

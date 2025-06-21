@@ -7,14 +7,13 @@
 #elif defined _M_X64
 #pragma comment(linker, "/manifestdependency:\"name='dlls_x64' version='1.0.0.0' type='x64'\"")
 #endif
+#define FULLSCREEN
 
 #include <cstdlib>
 #include <cstdio>
 
-int getScreenSize(bool height);
-
-const int ScreenWidth = 1920; //getScreenSize(false);
-const int ScreenHeight = 1080; //getScreenSize(true);
+const int ScreenWidth = 1920;
+const int ScreenHeight = 1080;
 
 
 // #define FULLSCREEN

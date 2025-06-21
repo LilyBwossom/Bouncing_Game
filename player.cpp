@@ -1,76 +1,141 @@
-#include "game.h"
 #include "player.h"
-#include "template.h"
-#include "surface.h"
-#include <string>
 
 namespace Tmpl8
 {
-    Sprite PlayerSprite(new Surface("assets/player.tga"), 2);
+    Sprite PlayerSprite(new Surface("assets/player.tga"), 4);
     const int PlayerSize = 64;
+    int currentFrame = 0;
+
+    void Player::Respawn(bool spawnsGrounded) {
+        #ifdef VERSION2
+        Game::ChangeLevel(*levels[currentLevel]);
+        #endif
+
+        velocityX = 0;
+        velocityY = 0;
+        grounded = spawnsGrounded;
+
+        x = Game::TileSize * 2;
+        y = Game::TileSize * (WorldTilesY - 4);
+
+        speedUpTime = 0;
+        jumpForceUpTime = 0;
+    }
 
     void Player::MoveLeft(float deltaTime) {
         facingRight = false;
-        velocityX += -speed * deltaTime;
+        velocityX += -(speed + speedMod) * deltaTime;
     }
 
     void Player::MoveRight(float deltaTime) {
         facingRight = true;
-        velocityX += speed * deltaTime;
+        velocityX += (speed + speedMod) * deltaTime;
+    }
+
+    void Player::SpeedUp(float deltaTime) {
+        if (speedUpTime > 0) {
+            speedUpTime -= deltaTime;
+            speedMod = 0.15;
+        }
+        else {
+            speedUpTime = 0;
+            speedMod = 0;
+        }
     }
 
     void Player::Jump(float deltaTime) {
         if (grounded) {
             grounded = false;
-            velocityY = -jumpForce; // * deltaTime; (removed because it made the jump height inconsistent)
+            #ifndef VERSION2
+            velocityY = -(jumpForce + jumpForceMod) * deltaTime;
+            #else     
+            velocityY = -(jumpForce + jumpForceMod);
+            #endif
+        }
+    }
+
+    void Player::JumpForceUp(float deltaTime) {
+        if (jumpForceUpTime > 0) {
+            jumpForceUpTime -= deltaTime;
+            #ifndef VERSION2
+            jumpForceMod = 0.2;
+            #else
+            jumpForceMod = 2;
+            #endif
+        }
+        else {
+            jumpForceUpTime = 0;
+            jumpForceMod = 0;
         }
     }
 
     void Player::Draw(Surface* gameScreen) {
-        PlayerSprite.SetFrame(facingRight);
+        PlayerSprite.SetFrame(facingRight + currentFrame);
+
+        int topLeftY = Game::CameraY - (ScreenHeight / 2);
 
         //-(PlayerSize / 2) so it's centered
-        PlayerSprite.Draw(gameScreen, (ScreenWidth / 2) - (PlayerSize / 2), (int)y - (PlayerSize / 2));
+        PlayerSprite.Draw(gameScreen, (ScreenWidth / 2) - (PlayerSize / 2), (int)y - (PlayerSize / 2) - topLeftY);
+    }
+
+    void Player::UpdateAnim()
+    {
+        int newFrame = currentFrame + 2;
+        if (newFrame >= 4) {
+            newFrame = 0;
+        }
+
+        currentFrame = newFrame;
     }
 
     void Player::Physics(float deltaTime) {
         x += velocityX;
         y += velocityY;
 
-        velocityX *= 0.5;
+        //reset the friction after collisions apply it
+        velocityX *= 0.5f - frictionMod;
+        frictionMod = 0;
+
         velocityY += gravity * deltaTime;
 
-        if (y > ScreenHeight)
+        if (y > ScreenHeight + PlayerSize)
         {
-            x = 200;
-            y = ScreenHeight / 1.5;
+            Respawn();
         }
 
-        Game::CameraX = x;
+        Game::CameraX = (int)x;
         //CameraY = y;
     }
 
-    void Player::CollideTop() {
+    void Player::CollideTop(int sideY) {
+        y = (float)(sideY + PlayerSize / 2);
+
         if (velocityY < 0) {
             velocityY = 0;
         }
     }
 
-    void Player::CollideBottom() {
+    void Player::CollideBottom(int sideY) {
         grounded = true;
+
+        y = (float)(sideY - PlayerSize / 2);
 
         if (velocityY > 0) {
             velocityY = 0;
         }
     }
 
-    void Player::CollideLeft() {
+    void Player::CollideLeft(int sideX) {
+        x = (float)(sideX + PlayerSize / 2);
+
         if (velocityX < 0) {
             velocityX = 0;
         }
     }
 
-    void Player::CollideRight() {
+    void Player::CollideRight(int sideX) {
+        x = (float)(sideX - PlayerSize / 2);
+
         if (velocityX > 0) {
             velocityX = 0;
         }
@@ -78,8 +143,8 @@ namespace Tmpl8
 
     //handles the player collisions
     void Player::Collisions(Surface* screen) {
-        int pxCenter = Game::CameraX;
-        int pyCenter = y;
+        int pxCenter = (int)x;
+        int pyCenter = (int)y;
 
         int px = pxCenter - (PlayerSize / 2);
         int py = pyCenter - (PlayerSize / 2);
@@ -87,59 +152,77 @@ namespace Tmpl8
         //this loops through the tiles near the player
         for (int y = -1; y <= 1; y++) {
             for (int x = -1; x <= 1; x++) {
-                //collision sides
+                int txSet = (int)floor(pxCenter / Game::TileSize + x); //tile tileset x coordinate
+                int tySet = (int)floor(pyCenter / Game::TileSize + y); //tile tileset y coordinate
+
+                int tx = txSet * Game::TileSize; //tile topleft x
+                int ty = tySet * Game::TileSize; //tile topleft y
+
+                Tile* tile = Game::GetTile(txSet, tySet);
+
+                //there is no tile at that index in the tilemap
+                if (tile == nullptr) {
+                    continue;
+                }
+
+                //this does the box collision
+                //---------------------------
+                float m = 10; //margin
+                int ts = Game::TileSize; //tile size
+                int ps = PlayerSize; //playersize
+
                 bool top = false;
                 bool bottom = false;
                 bool left = false;
                 bool right = false;
 
-                int txSet = floor((pxCenter + x * Game::TileSize) / Game::TileSize);
-                int tySet = floor((pyCenter + y * Game::TileSize) / Game::TileSize);
-
-                // int tx = floor((pxCenterScreen + x * Game::TileSize) / Game::TileSize);
-                // int ty = floor((pyCenterScreen + y * Game::TileSize) / Game::TileSize);
-
-                //this stops the program from trying to find a tile when there is none at that index in the tilemap
-                if (txSet < 0 || txSet >= Game::WorldTilesX || tySet < 0 && tySet >= Game::WorldTilesY) {
-                    continue;
+                if (tile->collisionType == Tile::CollisionType::FULL) {
+                    top = py <= ty + ts && py >= ty && px + ps - m >= tx && px + m <= tx + ts;
+                    bottom = py + ps >= ty && py + ps <= ty + ts && px + ps - m >= tx && px + m <= tx + ts;
+                    left = px <= tx + ts && px >= tx && py + ps - m >= ty && py + m <= ty + ts;
+                    right = px + ps >= tx && px + ps <= tx + ts && py + ps - m >= ty && py + m <= ty + ts;
                 }
+                else if (tile->collisionType == Tile::CollisionType::HALF) {
+                    int b = 1; //inner box margin
 
-                int tx = txSet * Game::TileSize;
-                int ty = tySet * Game::TileSize;
-
-
-                int tileType = Game::map[tySet][txSet * 4 + 2] - 'a';
-
-                //this does the box collision
-                if (tileType == 0) {
-                    bool horz = tx <= px + PlayerSize && px <= tx + Game::TileSize;
-                    bool vert = ty <= py + PlayerSize && py <= ty + Game::TileSize;
-
-                    top = horz && (ty + Game::TileSize >= py && ty + Game::TileSize <= py + PlayerSize);
-                    bottom = horz && (ty >= py && ty <= py + PlayerSize);
-                    left = vert && (tx + Game::TileSize >= px && tx + Game::TileSize <= px + PlayerSize);
-                    right = vert && (tx >= px && tx <= px + PlayerSize);
-
-                    //std::string string = "Collisions: " + std::to_string(top) + ", " + std::to_string(bottom) + ", " + std::to_string(left) + ", " + std::to_string(right) + "\nhorz and vert: " + std::to_string(horz) + ", " + std::to_string(vert);
-                    //char* char1 = (char*)(string).c_str();
-                    //screen->Print(char1, 2, 80, 0xffffff);
+                    top = py >= ty + ts / 4 - b && py <= ty + ts - ts / 4 + b && px + ps - m >= tx + ts / 4 - b && px + m <= tx + ts - ts / 4 + b;
+                    bottom = py + ps >= ty + ts / 4 - b && py + ps <= ty + ts - ts / 4 + b && px + ps - m >= tx + ts / 4 - b && px + m <= tx + ts - ts / 4 + b;
+                    right = px + ps >= tx + ts / 4 - b && px + ps <= tx + ts - ts / 4 + b && py + ps - m >= ty + ts / 4 - b && py + m <= ty + ts - ts / 4 + b;
+                    left = px >= tx + ts / 4 - b && px <= tx + ts - ts / 4 + b && py + ps - m >= ty + ts / 4 - b && py + m <= ty + ts - ts / 4 + b;
                 }
 
                 if (top) {
-                    CollideTop();
+                    tile->OnCollide(Tile::Direction::TOP, txSet, tySet);
+                    if (tile->hasCollision) {
+                        CollideTop(ty + Game::TileSize);
+                    }
                 }
 
                 if (bottom) {
-                    CollideBottom();
+                    tile->OnCollide(Tile::Direction::BOTTOM, txSet, tySet);
+                    if (tile->hasCollision) {
+                        CollideBottom(ty);
+                    }
                 }
 
                 if (left) {
-                    CollideLeft();
+                    tile->OnCollide(Tile::Direction::LEFT, txSet, tySet);
+                    if (tile->hasCollision) {
+                        CollideLeft(tx + Game::TileSize);
+                    }
                 }
 
                 if (right) {
-                    CollideRight();
+                    tile->OnCollide(Tile::Direction::RIGHT, txSet, tySet);
+                    if (tile->hasCollision) {
+                        CollideRight(tx);
+                    }
                 }
+                //---------------------------
+
+                #ifdef VERSION2
+                touchedFlag = false;
+                #endif
             }
         }
     }

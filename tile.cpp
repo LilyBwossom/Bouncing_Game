@@ -8,3 +8,4 @@ namespace Tmpl8
 		mapY = y;
 	}
 }
+

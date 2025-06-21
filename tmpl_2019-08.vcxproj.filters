@@ -10,6 +10,25 @@
     </ClCompile>
     <ClCompile Include="player.cpp" />
     <ClCompile Include="tile.cpp" />
+    <ClCompile Include="coin.cpp">
+      <Filter>tiles</Filter>
+    </ClCompile>
+    <ClCompile Include="spike.cpp">
+      <Filter>tiles</Filter>
+    </ClCompile>
+    <ClCompile Include="flag.cpp">
+      <Filter>tiles</Filter>
+    </ClCompile>
+    <ClCompile Include="levelmanager.cpp" />
+    <ClCompile Include="blower.cpp">
+      <Filter>tiles</Filter>
+    </ClCompile>
+    <ClCompile Include="ice.cpp">
+      <Filter>tiles</Filter>
+    </ClCompile>
+    <ClCompile Include="powerups.cpp">
+      <Filter>tiles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h" />
@@ -24,6 +43,31 @@
     <ClInclude Include="ground.h">
       <Filter>tiles</Filter>
     </ClInclude>
+    <ClInclude Include="coin.h">
+      <Filter>tiles</Filter>
+    </ClInclude>
+    <ClInclude Include="spike.h">
+      <Filter>tiles</Filter>
+    </ClInclude>
+    <ClInclude Include="flag.h">
+      <Filter>tiles</Filter>
+    </ClInclude>
+    <ClInclude Include="decorations.h">
+      <Filter>tiles</Filter>
+    </ClInclude>
+    <ClInclude Include="blower.h">
+      <Filter>tiles</Filter>
+    </ClInclude>
+    <ClInclude Include="ice.h">
+      <Filter>tiles</Filter>
+    </ClInclude>
+    <ClInclude Include="powerups.h">
+      <Filter>tiles</Filter>
+    </ClInclude>
+    <ClInclude Include="ending.h">
+      <Filter>tiles</Filter>
+    </ClInclude>
+    <ClInclude Include="levelmanager.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="template code">
@@ -37,5 +81,8 @@
     <Text Include="_readme.txt">
       <Filter>template code</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="V2Changes.md" />
   </ItemGroup>
 </Project>

@@ -1,10 +1,29 @@
-#include <vector>
-#include "tile.h"
 #pragma once
+#include "levelmanager.h"
+#include "tile.h"
+#include "ending.h"
+#include "powerups.h"
+#include "ice.h"
+#include "blower.h"
+#include "decorations.h"
+#include "surface.h"
+#include "template.h"
+#include "windows.h"
+#include "flag.h"
+#include "spike.h"
+#include "coin.h"
+#include "ground.h"
+#include "player.h"
+#include <vector>
+#include <string>
+#include <list>
+#include <iostream>
+#include <map>
 
 namespace Tmpl8 
 {
 	class Surface;
+	class Player;
 	
 	class Game
 	{
@@ -19,24 +38,22 @@ namespace Tmpl8
 			void KeyUp( int key ) { /* implement if you want to handle keys */ }
 			void KeyDown( int key ) { /* implement if you want to handle keys */ }
 
+			static void SetTile(char tileType[3], int txSet, int tySet);
+			static Tile* GetTile(int txSet, int tySet);
+
+			static Player player;
+
 			constexpr static int TileSize = 64;
-			constexpr static int WorldTilesX = 26;
-			constexpr static int WorldTilesY = 18;
+			static Tmpl8::map map;
+			static void Game::ChangeLevel(Tmpl8::map level);
 
 			static int CameraX, CameraY;
-			static char map[WorldTilesY][WorldTilesX * 2];
 
-			struct TileData
-			{
-				int ScreenX;
-				int ScreenY;
-				Tile tile;
-			};
-
-			TileData getTileScreen(int x, int y);
 		private:
 			Surface* screen;
-			void DrawTile(Surface* screen, int tx, int ty, int x, int y);
+			void DrawTile(Surface* screen, int tx, int ty, int screenX, int screenY, int x, int y);
 			void DrawTileSet(Surface* screen);
+
+			void Animate(float deltaTime);
 	};
 };
